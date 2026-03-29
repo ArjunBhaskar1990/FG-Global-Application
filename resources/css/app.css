@@ -1,0 +1,95 @@
+.input-wrapper {
+    position: relative;
+    width: 280px;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 10px 36px 10px 10px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 6px;
+    outline: none;
+}
+
+.input-wrapper.valid input {
+    border-color: #2ecc71;
+}
+
+.checkmark {
+    color: #FFF;
+    position: absolute;
+    font-weight: bold;
+    padding: 6px;
+    border-radius: 10px;
+    background-color: #2ecc71;
+    font-size: 18px;
+    pointer-events: none;
+}
+
+.loader {
+    top: 46%;
+    left: 50%;
+    width: 48px;
+    height: 48px;
+    background: #e4e4e4;
+    border-radius: 50%;
+    position: fixed;
+    animation: skLinRotate 1s ease-in-out infinite alternate;
+}
+
+.loader:after {
+    content: "";
+    position: absolute;
+    inset: 5px;
+    border-radius: 50%;
+    border: 5px solid transparent;
+    border-top-color: #ff3d00;
+}
+
+@keyframes skLinRotate {
+
+    95%,
+    100% {
+        transform: rotate(840deg)
+    }
+}
+
+.modal-lg {
+
+    width: 100% !important;
+
+    font-family: 'Poppins';
+    font-weight: bold;
+
+
+}
+.fa-check {
+    color: rgb(255, 255, 255);
+    font-size: 24px; /* adjust size */
+    border-radius: 20px;
+    background-color: #2ecc71;
+    padding:10px;
+}
+
+
+.fade-box {
+  opacity: 0;
+  transform: translateY(-10px);
+  visibility: hidden;
+  transition: all 0.4s ease;
+}
+
+.fade-box.show {
+  opacity: 1;
+  transform: translateY(0);
+  visibility: visible;
+}
+
+
+.hoverCounter:hover {
+
+    background-color: #094488;
+    border-radius: 10px;
+
+}
