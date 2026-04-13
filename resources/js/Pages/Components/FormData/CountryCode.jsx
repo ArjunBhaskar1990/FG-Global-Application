@@ -1,6 +1,6 @@
 
 
-export default function SelectInput({ label, placeholder, values, selectMode, setData, dataname }) {
+export default function CountryCode({ label, placeholder, values, selectMode, setData, dataname }) {
 
 
     return (
@@ -10,12 +10,12 @@ export default function SelectInput({ label, placeholder, values, selectMode, se
                 <label className="text-sm fw-semibold text-primary-light mb-8">
                     {label}
                 </label>
-                <select onChange={selectMode ? selectMode : (e) => setData(dataname, e.target.value)} className="form-select bg-white" style={{ border: 'solid 2px #707070' }} >
+                <select className="col-sm-1 form-select bg-white" onChange={selectMode ? selectMode : (e) => setData(dataname, e.target.value)} style={{ border: 'solid 2px #707070' }} >
                     <option value="">{placeholder}</option>
 
                     {values && values.map((item, index) => {
                         return (
-                            <option key={index}>{item} </option>
+                            <option key={item.phonecode} value={item.phonecode}>{"+" + item.phonecode}  {"(" + item.name + ")"} </option>
                         )
                     })}
 

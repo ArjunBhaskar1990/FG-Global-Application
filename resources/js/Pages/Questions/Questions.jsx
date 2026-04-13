@@ -3,7 +3,7 @@ import NavBar from "../Includes/NavBar";
 import SideMenu from "../Includes/SideMenu";
 import { Link, router } from "@inertiajs/react";
 
-export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, questions }) {
+export default function Dashboard({ auth, role, theme, totalpendingreg, totaltestexam, questions }) {
 
     const [totalNewReg, setTotalNewReg] = useState(totalpendingreg);
     const [totaltestCount, settotaltestCount] = useState(totaltestexam);
@@ -48,11 +48,11 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
                 className="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
             </div>
 
-            <SideMenu auth={auth} role={role} />
+            <SideMenu auth={auth} role={role} theme={theme}/>
 
             <main id="dashboard-main" className="dashboard-main">
 
-                <NavBar />
+                <NavBar auth={auth} theme={theme}/>
 
                 <div className="dashboard-main-body">
 

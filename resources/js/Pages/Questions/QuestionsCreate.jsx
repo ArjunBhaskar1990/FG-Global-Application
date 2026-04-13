@@ -3,7 +3,7 @@ import NavBar from "../Includes/NavBar";
 import SideMenu from "../Includes/SideMenu";
 import { Link, router, useForm } from "@inertiajs/react";
 
-export default function QuestionsCreate({ auth, role, totalpendingreg, totaltestexam, newregn }) {
+export default function QuestionsCreate({ auth, role, theme, totalpendingreg, totaltestexam, newregn }) {
 
     const [totalNewReg, setTotalNewReg] = useState(totalpendingreg);
     const [totaltestCount, settotaltestCount] = useState(totaltestexam);
@@ -52,11 +52,11 @@ export default function QuestionsCreate({ auth, role, totalpendingreg, totaltest
                 className="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
             </div>
 
-            <SideMenu auth={auth} role={role} />
+            <SideMenu auth={auth} role={role} theme={theme} />
 
             <main id="dashboard-main" className="dashboard-main">
 
-                <NavBar />
+                <NavBar auth={auth} theme={theme}/>
 
                 <div className="dashboard-main-body">
 
@@ -99,8 +99,8 @@ export default function QuestionsCreate({ auth, role, totalpendingreg, totaltest
                                                     <select onChange={(e) => setData('education_type', e.target.value)} id="educationType" className="form-control form-select">
                                                         <option value="Select a Education Type" disabled selected>Select a Education Type
                                                         </option>
-                                                        <option value="1">Tuition</option>
-                                                        <option value="2">School</option>
+                                                        <option value="2">Tuition</option>
+                                                        <option value="1">School</option>
                                                         <option value="3">Competitive Exam</option>
                                                     </select>
                                                 </div>

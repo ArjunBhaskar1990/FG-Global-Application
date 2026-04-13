@@ -3,6 +3,7 @@
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\ExamDataController;
 use App\Http\Controllers\NewStudentController;
+use App\Http\Controllers\OTPController;
 use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\RegistrationController;
 use App\Http\Controllers\SessionController;
@@ -63,5 +64,14 @@ Route::middleware('auth')->group(function () {
     Route::post('/student-exam-results', [ExamDataController::class, 'store'])->name('examresult.store');
     Route::post('/student-exam-results/review-result', [ExamDataController::class, 'reviewTest'])->name('review.test');
     Route::post('/student-exam-results/complete-registration', [ExamDataController::class, 'completeRegistration'])->name('complete.registration');
+
+    // OTP
+
+    Route::post('/student-email-verification', [OTPController::class, 'SendEmail'])->name('send.otp-email');
+    Route::post('/student-email-verification-time-out', [OTPController::class, 'TimeOut'])->name('otp.timeout');
+
+    // theme color
+
+    Route::post('/application-settings-theme', [DashboardController::class, 'changeTheme'])->name('change.theme');
 
 });

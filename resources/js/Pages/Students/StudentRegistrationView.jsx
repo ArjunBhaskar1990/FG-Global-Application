@@ -5,7 +5,7 @@ import { Link, useForm, router } from "@inertiajs/react";
 import DatePlugin from "../Components/FormData/DatePlugin";
 import { BsCheckLg } from "react-icons/bs";
 
-export default function StudentRegistrationView({ auth, role, studentdetails }) {
+export default function StudentRegistrationView({ auth, role, theme, studentdetails }) {
 
 
     const [studentDetails, setStudentDetails] = useState(studentdetails);
@@ -102,7 +102,7 @@ Password: ${password}`;
         router.visit(route('review.test'), {
             method: 'POST',
             data: {
-                student_regid : studentdetails.id,
+                student_regid: studentdetails.id,
                 exam_summary: examSummary,
                 bridge_course: bridgeCourse
             },
@@ -122,11 +122,11 @@ Password: ${password}`;
                 className="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
             </div>
 
-            <SideMenu auth={auth} role={role} />
+            <SideMenu auth={auth} role={role} theme={theme}/>
 
             <main id="dashboard-main" className="dashboard-main">
 
-                <NavBar />
+                 <NavBar auth={auth} theme={theme}/>
 
                 <div className="dashboard-main-body">
 
@@ -235,6 +235,10 @@ Password: ${password}`;
                                                     <div className="d-flex gap-4">
                                                         <span className="fw-semibold text-sm text-primary-light w-120-px">Aadhaar Number</span>
                                                         <span className="fw-normal text-sm text-secondary-light">: {studentDetails.adhaar}</span>
+                                                    </div>
+                                                    <div className="d-flex gap-4">
+                                                        <span className="fw-semibold text-sm text-primary-light w-120-px">Emirates ID</span>
+                                                        <span className="fw-normal text-sm text-secondary-light">: {studentDetails.emirates_id}</span>
                                                     </div>
                                                     <div className="d-flex gap-4">
                                                         <span className="fw-semibold text-sm text-primary-light w-120-px">Passport</span>
@@ -1613,107 +1617,104 @@ Password: ${password}`;
                                                                         </button>
                                                                     </div> */}
 
+                                                                    {(!studentDetails.status === 4 || studentDetails.status === 2) &&
 
-                                                                    <div className=" col-sm-12">
+                                                                        <div className=" col-sm-12">
 
-                                                                        {examResult.length > 0 &&
-                                                                            <div className="table-responsive" style={{ fontFamily: 'Poppins' }}>
-                                                                                <table className="table table-striped table-hover align-middle text-center mb-0">
-                                                                                    <thead className="table-dark sticky-top">
-                                                                                        <tr>
-                                                                                            <th className="bg-dark">#</th>
-                                                                                            <th className="bg-dark">Question</th>
-                                                                                            <th className="bg-dark">Answer</th>
-                                                                                            <th className="bg-dark">File</th>
-                                                                                        </tr>
-                                                                                    </thead>
-                                                                                    <tbody>
-                                                                                        {examResult.map((row, idx) => (
-                                                                                            <tr
-                                                                                                key={idx}
-                                                                                                style={{ transition: "all 0.3s ease" }}
-                                                                                                className={idx % 2 === 0 ? "bg-light" : ""}
-                                                                                            >
-                                                                                                <td className="fw-bold p-3">{idx + 1}</td>
-                                                                                                <td
-                                                                                                    className="fw-semibold p-3 text-truncate text-start"
-                                                                                                    style={{ maxWidth: "250px" }}
-                                                                                                    title={row.question} // show full text on hover
-                                                                                                >
-                                                                                                    {row.question}
-                                                                                                </td>
-                                                                                                <td className="p-3" >
-                                                                                                    <div className="fs-6 text-white text-start">
-                                                                                                        {row.answer}
-                                                                                                    </div>
-                                                                                                </td>
-                                                                                                <td className="p-3 text-start">
-                                                                                                    {row.image ? (
-                                                                                                        <a
-                                                                                                            href={row.image}
-                                                                                                            target="_blank"
-                                                                                                            rel="noopener noreferrer"
-                                                                                                            className="text-primary text-decoration-underline"
-                                                                                                        >
-                                                                                                            {row.image.split("/").pop()}
-                                                                                                        </a>
-                                                                                                    ) : (
-                                                                                                        <span className="fst-italic fw-bold">No File</span>
-                                                                                                    )}
-                                                                                                </td>
+                                                                            {examResult.length > 0 &&
+                                                                                <div className="table-responsive" style={{ fontFamily: 'Poppins' }}>
+                                                                                    <table className="table table-striped table-hover align-middle text-center mb-0">
+                                                                                        <thead className="table-dark sticky-top">
+                                                                                            <tr>
+                                                                                                <th className="bg-dark">#</th>
+                                                                                                <th className="bg-dark">Question</th>
+                                                                                                <th className="bg-dark">Answer</th>
+                                                                                                <th className="bg-dark">File</th>
                                                                                             </tr>
-                                                                                        ))}
-                                                                                    </tbody>
-                                                                                </table>
+                                                                                        </thead>
+                                                                                        <tbody>
+                                                                                            {examResult.map((row, idx) => (
+                                                                                                <tr
+                                                                                                    key={idx}
+                                                                                                    style={{ transition: "all 0.3s ease" }}
+                                                                                                    className={idx % 2 === 0 ? "bg-light" : ""}
+                                                                                                >
+                                                                                                    <td className="fw-bold p-3">{idx + 1}</td>
+                                                                                                    <td
+                                                                                                        className="fw-semibold p-3 text-truncate text-start"
+                                                                                                        style={{ maxWidth: "250px" }}
+                                                                                                        title={row.question}
+                                                                                                    >
+                                                                                                        {row.question}
+                                                                                                    </td>
+                                                                                                    <td className="p-3" >
+                                                                                                        <div className="fs-6 text-white text-start">
+                                                                                                            {row.answer}
+                                                                                                        </div>
+                                                                                                    </td>
+                                                                                                    <td className="p-3 text-start">
+                                                                                                        {row.file ? (
+                                                                                                            <a
+                                                                                                                href={`/storage/exam_image/${row.file}`}
+                                                                                                                target="_blank"
+                                                                                                                rel="noopener noreferrer"
+                                                                                                                className="text-white text-decoration-underline"
+                                                                                                            >
+                                                                                                                {row.file.split("/").pop()}
+                                                                                                            </a>
+                                                                                                        ) : (
+                                                                                                            <span className="fst-italic  fw-bold">No File</span>
+                                                                                                        )}
+                                                                                                    </td>
+                                                                                                </tr>
+                                                                                            ))}
+                                                                                        </tbody>
+                                                                                    </table>
 
 
 
 
+                                                                                </div>
+                                                                            }
+
+
+                                                                            <div className="m-3" style={{ fontFamily: 'Poppins' }}>
+                                                                                <hr />
+                                                                                <label className="fw-bold fs-5" >Exam Summary</label>
+
+                                                                                <br />
+                                                                                <textarea onChange={(e) => setExamSummary(e.target.value)} className="col-sm-8 rounded text-dark " defaultValue={examSummary} style={{ backgroundColor: '#e6e6e6' }} /> <br /> <br />
+
+
+
+                                                                                <div className="form-check style-check d-flex align-items-center">
+                                                                                    <input onChange={(e) => setbridgeCourse(e)} checked={bridgeCourse} className="form-check-input" type="checkbox" />
+                                                                                    <label className="form-check-label">
+                                                                                        Student / Parent is willing for BRIDGE Course.
+                                                                                    </label>
+                                                                                </div>
+
+                                                                                <br /> <br />
+
+
+
+
+
+                                                                                <button onClick={reviewTest} className="btn btn-success text-dark fw-bold"> Review  </button>
                                                                             </div>
-                                                                        }
-                                                                        <div className="m-3" style={{ fontFamily: 'Poppins' }}>
-                                                                            <hr />
-                                                                            <label className="fw-bold fs-5" >Exam Summary</label>
 
-                                                                            <br />
-                                                                            <textarea onChange={(e) => setExamSummary(e.target.value)} className="col-sm-8 rounded text-dark " defaultValue={examSummary} style={{ backgroundColor: '#e6e6e6' }} /> <br /> <br />
+                                                                            {examResult.length < 1 &&
+                                                                                <div className="d-flex justify-content-center">
+                                                                                    Currently nothing to show !!
+                                                                                </div>
 
-
-
-                                                                            <div className="form-check style-check d-flex align-items-center">
-                                                                                <input onChange={(e) => setbridgeCourse(e)} checked={bridgeCourse} className="form-check-input" type="checkbox" />
-                                                                                <label className="form-check-label">
-                                                                                    Student / Parent is willing for BRIDGE Course.
-                                                                                </label>
-                                                                            </div>
-
-                                                                            <br /> <br />
-
-
-
-
-
-                                                                            <button onClick={reviewTest} className="btn btn-success text-dark fw-bold"> Review  </button>
+                                                                            }
                                                                         </div>
-                                                                        {examResult.length < 1 &&
-                                                                            <div className="d-flex justify-content-center">
-                                                                                Currently nothing to show !!
-                                                                            </div>
-
-                                                                        }
-                                                                    </div>
-
+                                                                    }
                                                                 </div>
 
                                                             </div>
-
-
                                                         </div>
-
-
-
-
-
 
                                                     </div>
                                                 </div>

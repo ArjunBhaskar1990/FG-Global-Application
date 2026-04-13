@@ -1,14 +1,63 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import NavBar from "../Includes/NavBar";
 import SideMenu from "../Includes/SideMenu";
 import { Link, router } from "@inertiajs/react";
 import { FaClipboard, FaPen, FaUserFriends, FaCheck } from 'react-icons/fa';
+import OtpInput from "../Components/FormData/OtpInput";
+export default function StudentDashboard({ auth, theme, role, questions }) {
 
-export default function StudentDashboard({ auth, role, questions }) {
-
-
+    const [inputs, setInputs] = useState('');
+    const [loader, setLoader] = useState(false);
     const [questionsState, setQuestions] = useState([]);
     const [answers, setAnswers] = useState([]);
+    const [showOTPInput, setShowOTPInput] = useState(0);
+    const [emailError, setEmailError] = useState('');
+
+    const email_frverification = useRef();
+    const INITIAL_TIME = 1 * 60; // 10 Mins
+
+    const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
+    const [isRunning, setIsRunning] = useState(false);
+
+
+
+    useEffect(() => {
+
+        if (!isRunning) return;
+
+        if (timeLeft === 0) {
+            setIsRunning(false);
+            setShowOTPInput(0);
+            router.visit(route('otp.timeout'), {
+                method: 'POST',
+                preserveScroll: true,
+                preserveState: true,
+                preserveUrl: true,
+                onSuccess: () => {
+
+                    setTimeLeft(INITIAL_TIME);
+                    setEmailError('');
+                }
+            })
+            return;
+        }
+
+        const timer = setInterval(() => {
+
+            setTimeLeft((prev) => prev - 1);
+
+        }, 1000);
+
+        return () => clearInterval(timer);
+
+    }, [isRunning, timeLeft])
+
+
+    const formatTime = (seconds) => {
+        const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
+        const secs = String(seconds % 60).padStart(2, "0");
+        return `${mins}:${secs}`;
+    }
 
     const icons = [
         <FaClipboard />,
@@ -66,7 +115,6 @@ export default function StudentDashboard({ auth, role, questions }) {
     };
 
 
-
     const handleSubmit = () => {
 
 
@@ -104,16 +152,79 @@ export default function StudentDashboard({ auth, role, questions }) {
 
         router.visit(route('complete.registration'), {
             method: "POST",
+            data: {
+                email: email_frverification.current.value,
+                typed_otp: inputs
+            },
+            preserveState: true,
             preserveScroll: true,
             preserveUrl: true,
+            onSuccess: (page) => {
+                setEmailError(page.props.flash.failed);
+
+
+
+            }
         })
     }
 
 
+    const sendOTP = () => {
+
+        setLoader(true);
+        setIsRunning(true)
+        router.visit(route('send.otp-email'), {
+
+            method: 'POST',
+            preserveScroll: true,
+            preserveState: true,
+            preserveUrl: true,
+            data: {
+
+                email: email_frverification.current.value
+
+            },
+            onSuccess: () => {
+
+                setShowOTPInput(1)
+
+            },
+            onFinish: () => {
+                setLoader(false);
+
+            },
+            onError: (page) => {
+
+                setEmailError(page.email)
+                setLoader(false);
+            }
+        })
+
+
+
+
+
+    }
+
+
+    useEffect(() => {
+
+        const body = document.getElementById('body');
+        if (loader) {
+            body.classList.add('opacity-50')
+
+        } else {
+            body.classList.remove('opacity-50')
+
+        }
+    }, [loader])
 
     return (
 
         <>
+            {loader &&
+                <span className="loader"></span>
+            }
 
 
             <div className="body-overlay"></div>
@@ -121,13 +232,13 @@ export default function StudentDashboard({ auth, role, questions }) {
                 className="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
             </div>
 
-            <SideMenu auth={auth} role={role} />
+            <SideMenu auth={auth} role={role} theme={theme}/>
 
-            <main id="dashboard-main" className="dashboard-main">
+            <main id="dashboard-main " className="dashboard-main">
 
-                <NavBar />
+                <NavBar auth={auth} theme={theme}/>
 
-                <div className="dashboard-main-body">
+                <div id="body" className="dashboard-main-body">
 
 
                     <div
@@ -143,10 +254,6 @@ export default function StudentDashboard({ auth, role, questions }) {
 
                             <div className="col-xxl-12">
                                 <div className="row gy-4 d-flex justify-content-center ">
-
-
-
-
 
                                 </div>
 
@@ -298,12 +405,31 @@ export default function StudentDashboard({ auth, role, questions }) {
                                         <>
                                             <p className="text-start fs-6">
                                                 You have successfully completed our registration process. Just one more step to go—please verify your email ID to ensure smooth communication. <br /> <br />
-                                                <input className="bg-white p-1 ps-3 text-dark border" value={auth.students.email} type="email" /> &nbsp;
-                                                <button className="btn btn-primary">SEND OTP</button>
+                                                <input disabled={isRunning} ref={email_frverification} style={isRunning ? { backgroundColor: '#b9b6b6' } : { backgroundColor: '#f2f2f2' }} className="p-1 rounded ps-3 w-50 fs-5 text-dark border" defaultValue={auth.students.email} type="email" /> &nbsp;
+                                                <button disabled={isRunning} onClick={sendOTP} className={`btn ${isRunning ? ' btn-secondary' : 'btn-primary'}`}>SEND OTP</button>
+                                                {isRunning &&
+                                                    <span className="fs-5">
+                                                        &nbsp;
+                                                        {formatTime(timeLeft)}
+                                                    </span>
+                                                }
+                                                <br />
 
-                                                <br /> <br />
+                                                <span className="text-white text-xs fst-italic"> {emailError} </span>
 
-                                                <button onClick={goToComplete} className="btn btn-success fw-bold text-dark">VERIFY EMAIL & COMPLETE REGISTRATION !!</button>
+                                                {showOTPInput === 1 &&
+                                                    <div className="p-3 bg-dark rounded">
+                                                        <OtpInput length={6} setInputs={setInputs} />
+                                                    </div>
+                                                }
+                                                <br /><br />
+                                                <button
+                                                    onClick={goToComplete}
+                                                    className={`btn  fw-bold text-dark ${inputs.length === 6 ? "btn-success" : "disabled btn-secondary"
+                                                        }`}
+                                                >
+                                                    VERIFY EMAIL & COMPLETE REGISTRATION !!
+                                                </button>
                                             </p>
                                         </>
                                     }
@@ -320,7 +446,7 @@ export default function StudentDashboard({ auth, role, questions }) {
                             className="current-year"></span> FG Global School. Designed by Oracuz</p>
                     </div>
                 </footer>
-            </main>
+            </main >
 
 
 

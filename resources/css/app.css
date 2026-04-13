@@ -89,7 +89,17 @@
 
 .hoverCounter:hover {
 
-    background-color: #094488;
+    background-color: #181a1d;
+    border-radius: 10px;
+
+}
+
+
+
+
+.active-card {
+
+    background-color: #181a1d;
     border-radius: 10px;
 
 }

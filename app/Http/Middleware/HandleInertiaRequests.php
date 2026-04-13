@@ -2,6 +2,7 @@
 namespace App\Http\Middleware;
 
 use App\Enums\Role;
+use App\Models\Configuration;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Inertia\Middleware;
@@ -38,8 +39,7 @@ class HandleInertiaRequests extends Middleware
     {
         return [
 
-
-            'auth' => Auth::user() ? Auth::user()->load('students') : null,
+            'auth'  => Auth::user() ? Auth::user()->load('students') : null,
             'flash' => [
                 'message' => fn() => $request->session()->get('message'),
                 'failed'  => fn()  => $request->session()->get('failed'),
@@ -59,16 +59,9 @@ class HandleInertiaRequests extends Middleware
             }
                 : null,
 
-            // $studentRegn = StudentRegn::get(),
-            // 'status' => Auth::check()
-            // && match ($studentRegn->status) {
-            //     StudentStatus::PENDING     => 'Pending',
-            //     StudentStatus::TEST        => 'Test',
-            //     StudentStatus::COUNSELLING => 'Counselling',
-            //     StudentStatus::STUDENT     => 'Student',
-            // },
+            'theme' => Configuration::select('theme')->first(),
 
-             ...parent::share($request),
+            ...parent::share($request),
             //
         ];
     }

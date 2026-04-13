@@ -1,7 +1,7 @@
 import { useEffect } from "react"
 import { Link } from "@inertiajs/react";
 
-export default function SideMenu({ auth, role }) {
+export default function SideMenu({ auth, role, theme }) {
 
 
 
@@ -9,7 +9,7 @@ export default function SideMenu({ auth, role }) {
 
         const body = document.querySelector('html');
 
-        body.setAttribute('data-theme', 'dark');
+        body.setAttribute('data-theme', theme.theme);
 
     }, [])
 
@@ -81,8 +81,9 @@ export default function SideMenu({ auth, role }) {
                     <div
                         className="sidebar-logo d-flex align-items-center justify-content-between">
                         <a href={route('page.dashboard')} >
-                            <img src="/storage/assets/images/logo.png" alt="site logo"
-                                className="light-logo" />
+
+                            <img src="/storage/fgglobal/fg_og.png" alt="site logo"
+                                className="light-logo" style={{ width: '100px' }} />
                             <div className="d-flex justify-content-center">
                                 <img src="/storage/fgglobal/fg_og.png" alt="site logo"
                                     className="dark-logo" style={{ width: '100px' }} />
@@ -121,7 +122,7 @@ export default function SideMenu({ auth, role }) {
                             </span>
                         </button>
                         <ul className="dropdown-menu dropdown-menu-lg-end border p-12">
-                            <li>
+                            {/* <li>
                                 <a href="student-details.html"
                                     className="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6">
                                     <i className="ri-user-3-line"></i>
@@ -134,7 +135,7 @@ export default function SideMenu({ auth, role }) {
                                     <i className="ri-settings-3-line"></i>
                                     Setting
                                 </a>
-                            </li>
+                            </li> */}
                             <li>
                                 <Link href={route('logout')} method="delete"
                                     className="dropdown-item rounded text-secondary-light bg-hover-neutral-200 text-hover-neutral-900 d-flex align-items-center gap-2 py-6">
@@ -155,7 +156,7 @@ export default function SideMenu({ auth, role }) {
                                 <span>Dashboard</span>
                             </Link>
                         </li>
-                        {role === "Super Admin" || role === "Counsellor" &&
+                        {(role === "Super Admin" || role === "Counsellor") &&
                             <>
                                 <li className="dropdown">
                                     <a style={{ cursor: 'pointer' }} onClick={dropAdmission}>

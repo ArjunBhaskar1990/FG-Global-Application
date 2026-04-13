@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers;
 
+use App\Models\Country;
 use App\Models\StudentRegn;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -12,7 +13,15 @@ class RegistrationController extends Controller
 
     public function StudentRegistration()
     {
-        return Inertia::render('Students/StudentRegistration');
+
+        $countries = Country::query()
+            ->select('id', 'name', 'phonecode')
+            ->whereIn('id', [231, 101])
+            ->get();
+
+        return Inertia::render('Students/StudentRegistration', [
+            'countries' => $countries,
+        ]);
 
     }
 
@@ -21,39 +30,46 @@ class RegistrationController extends Controller
 
         $validated = $request->validate([
 
-            'first_name'           => 'required',
-            'last_name'            => 'required',
-            'address'              => 'required',
-            'city'                 => 'required',
-            'state'                => 'required',
-            'contact_no'           => 'required|numeric',
-            'email'                => 'required|email:unique,users',
-            'dob'                  => 'required',
-            'age'                  => 'required',
-            'gender'               => 'required',
-            'adhaar'               => 'required',
-            'passport'             => 'required',
-            'package'              => 'required',
-            'tuition_mode'         => 'nullable',
-            'competitive_mode'     => 'nullable',
-            'duration'             => 'nullable',
-            'previous_school'      => 'nullable',
-            'automated_calls'      => 'nullable|numeric',
-            'automated_email'      => 'nullable|email',
-            'mother_name'          => 'required',
-            'mother_address'       => 'required',
-            'mother_contact'       => 'required|numeric',
-            'mother_employment'    => 'required',
-            'mother_phone'         => 'required|numeric',
-            'mother_email'         => 'required|email',
-            'mother_qualification' => 'required',
-            'father_name'          => 'required',
-            'father_address'       => 'required',
-            'father_contact'       => 'required|numeric',
-            'father_employment'    => 'required',
-            'father_phone'         => 'required|numeric',
-            'father_email'         => 'required|email',
-            'father_qualification' => 'required',
+            'first_name'                  => 'required',
+            'last_name'                   => 'required',
+            'address'                     => 'required',
+            'city'                        => 'required',
+            'state'                       => 'required',
+            'contact_no'                  => 'required|numeric',
+            'country_code_student'        => 'required',
+            'country_code_autocalls'      => 'required',
+            'email'                       => 'required|email:unique,users',
+            'dob'                         => 'required',
+            'age'                         => 'required',
+            'gender'                      => 'required',
+            'adhaar'                      => 'required',
+            'passport'                    => 'required',
+            'package'                     => 'required',
+            'emirates_id'                 => 'nullable',
+            'tuition_mode'                => 'nullable',
+            'competitive_mode'            => 'nullable',
+            'duration'                    => 'nullable',
+            'previous_school'             => 'nullable',
+            'automated_calls'             => 'nullable|numeric',
+            'automated_email'             => 'nullable|email',
+            'mother_name'                 => 'required',
+            'mother_address'              => 'required',
+            'mother_contact'              => 'required|numeric',
+            'country_code_motherpersonal' => 'required',
+            'country_code_motherwork'     => 'required',
+            'mother_employment'           => 'required',
+            'mother_phone'                => 'required|numeric',
+            'mother_email'                => 'required|email',
+            'mother_qualification'        => 'required',
+            'father_name'                 => 'required',
+            'father_address'              => 'required',
+            'father_contact'              => 'required|numeric',
+            'country_code_fatherpersonal' => 'required',
+            'country_code_fatherwork'     => 'required',
+            'father_employment'           => 'required',
+            'father_phone'                => 'required|numeric',
+            'father_email'                => 'required|email',
+            'father_qualification'        => 'required',
         ]);
 
         try {
@@ -73,7 +89,22 @@ class RegistrationController extends Controller
                 if ($request->gender === "Female") {
                     $validated['gender'] = 2;
                 }
-                $validated['reg_id'] = $reg_id;
+                unset(
+                    $validated['country_code_student'],
+                    $validated['country_code_autocalls'],
+                    $validated['country_code_motherpersonal'],
+                    $validated['country_code_motherwork'],
+                    $validated['country_code_fatherpersonal'],
+                    $validated['country_code_fatherwork']
+                );
+
+                $validated['reg_id']          = $reg_id;
+                $validated['contact_no']      = $request->country_code_student . $validated['contact_no'];
+                $validated['automated_calls'] = $request->country_code_autocalls . $validated['automated_calls'];
+                $validated['mother_contact']  = $request->country_code_motherpersonal . $validated['mother_contact'];
+                $validated['mother_phone']    = $request->country_code_motherwork . $validated['mother_phone'];
+                $validated['father_contact']  = $request->country_code_fatherpersonal . $validated['father_contact'];
+                $validated['father_phone']    = $request->country_code_fatherwork . $validated['father_phone'];
 
                 StudentRegn::create($validated);
 

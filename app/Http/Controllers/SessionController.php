@@ -22,19 +22,32 @@ class SessionController extends Controller
             'password' => 'required|min:8',
         ]);
 
-        if (Auth::attempt([
+        if (Auth::attemptWhen([
             'email'    => $request->email,
             'password' => $request->password,
             'status'   => 0,
-        ])) {
-            $request->session()->regenerate();
+        ], function ($user) {
 
+
+            if (! $user->students()->exists()) {
+                return true;
+            }
+
+            return $user->students()
+            ->where(function ($query) {
+                $query->whereDate('date_testexam', now()->toDateString())
+                ->orWhereNull('date_testexam');
+            })
+            ->exists();
+        })) {
+
+            $request->session()->regenerate();
 
             return redirect()->route('page.dashboard');
         }
 
         throw ValidationException::withMessages([
-            'email' => 'Invalid credentials or inactive account.',
+            'email' => 'Invalid credentials, inactive account, or exam date not valid.',
         ]);
 
     }

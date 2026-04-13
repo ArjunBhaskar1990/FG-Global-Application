@@ -4,7 +4,7 @@ import SideMenu from "../Includes/SideMenu";
 import { Link, router } from "@inertiajs/react";
 import Pagination from "../Includes/Pagination";
 
-export default function OnGoingStudents({ auth, role, newregn }) {
+export default function OnGoingStudents({ auth, role, newregn, theme }) {
 
     const [registration, setRegistration] = useState([]);
 
@@ -27,11 +27,11 @@ export default function OnGoingStudents({ auth, role, newregn }) {
                 className="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
             </div>
 
-            <SideMenu auth={auth} role={role} />
+            <SideMenu auth={auth} role={role} theme={theme}/>
 
             <main id="dashboard-main" className="dashboard-main">
 
-                <NavBar />
+                 <NavBar auth={auth} theme={theme}/>
 
                 <div className="dashboard-main-body">
 

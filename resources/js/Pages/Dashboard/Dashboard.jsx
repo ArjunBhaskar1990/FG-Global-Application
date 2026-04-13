@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import NavBar from "../Includes/NavBar";
 import SideMenu from "../Includes/SideMenu";
 import { Link, router } from "@inertiajs/react";
-
-export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, totalcounselees, totalstudents, totalrejected, newregn }) {
+import { FaUserPlus, FaUserGraduate, FaHandsHelping, FaBookReader, FaBan  } from 'react-icons/fa';
+export default function Dashboard({ auth, role, theme, totalpendingreg, totaltestexam, totalcounselees, totalstudents, totalrejected, newregn }) {
 
     const [totalNewReg, setTotalNewReg] = useState(totalpendingreg);
     const [totaltestCount, settotaltestCount] = useState(totaltestexam);
@@ -12,6 +12,7 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
     const [totalrejectedCount, settotalrejectedCount] = useState(totalrejected);
     const [registration, setRegistration] = useState([]);
     const [dataTitle, setDataTitle] = useState('');
+    const [activeCard, setActiveCard] = useState(1);
 
 
     useEffect(() => {
@@ -33,6 +34,7 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
 
                 setRegistration(page.props.newregn);
                 setDataTitle("Examinees")
+                setActiveCard(2);
 
             }
 
@@ -49,7 +51,7 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
 
                 setRegistration(page.props.newregn);
                 setDataTitle("Counselees")
-
+                setActiveCard(3);
             }
 
         })
@@ -66,6 +68,7 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
 
                 setRegistration(page.props.newregn);
                 setDataTitle("Students")
+                setActiveCard(4);
 
             }
 
@@ -83,6 +86,7 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
 
                 setRegistration(page.props.newregn);
                 setDataTitle("New Registration")
+                setActiveCard(1);
 
             }
 
@@ -100,14 +104,21 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
 
                 setRegistration(page.props.newregn);
                 setDataTitle("Rejected Applications")
+                setActiveCard(5);
 
             }
 
         })
     }
 
+    // const icons = [
+    //     <FaUserPlus />
 
+    // ];
 
+    // function MyUserPlus({ i }) {
+    //     return icons[i] || <FaUserPlus />;
+    // }
 
 
 
@@ -116,17 +127,17 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
 
         <>
 
-
+            {/* <MyClipboard i={i} /> */}
             <div className="body-overlay"></div>
             <div
                 className="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
             </div>
 
-            <SideMenu auth={auth} role={role} />
+            <SideMenu auth={auth} role={role} theme={theme} />
 
             <main id="dashboard-main" className="dashboard-main">
 
-                <NavBar />
+                <NavBar auth={auth} theme={theme} />
 
                 <div className="dashboard-main-body">
 
@@ -148,24 +159,25 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
 
 
 
-                                    {role === "Counsellor" &&
+                                    {(role === "Counsellor" || role === "Super Admin") &&
 
                                         <>
                                             <div className="col-xxl-2 col-sm-4 " style={{ cursor: 'pointer' }} onClick={NewRegn}>
-                                                <div className="card  shadow-1 radius-8 gradient-bg-end-1 h-100">
+                                                <div className="card shadow-1 radius-8 gradient-bg-end-1 h-100 " >
 
-                                                    <div className="card-body p-20 hoverCounter">
+                                                    <div className={`card-body p-20 hoverCounter ${activeCard === 1 ? 'active-card' : ''}`}>
                                                         <div
                                                             className="d-flex flex-wrap align-items-center gap-3 mb-16">
                                                             <div
                                                                 className="w-44-px h-44-px bg-warning-600 rounded-circle d-flex justify-content-center align-items-center">
-                                                                <img src="/storage/assets/images/icons/dashboard-icon1.png"
-                                                                    alt="Icon" />
+
+
+                                                                <FaUserPlus className="text-xxl" />
                                                             </div>
                                                             <p className="fw-medium text-primary-light mb-1">New Regn
                                                             </p>
                                                         </div>
-                                                        <h6 className="mb-0">{totalNewReg}</h6>
+                                                        <h6 className={"mb-0"}>{totalNewReg}</h6>
 
                                                     </div>
                                                 </div>
@@ -175,13 +187,13 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
                                             <div className="col-xxl-2 col-sm-4" style={{ cursor: 'pointer' }} onClick={examTest}>
                                                 <div className="card shadow-1 radius-8 gradient-bg-end-1 h-100">
 
-                                                    <div className="card-body p-20 hoverCounter">
+                                                    <div className={`card-body p-20 hoverCounter ${activeCard === 2 ? 'active-card' : ''}`}>
                                                         <div
                                                             className="d-flex flex-wrap align-items-center gap-3 mb-16">
                                                             <div
                                                                 className="w-44-px h-44-px bg-warning-600 rounded-circle d-flex justify-content-center align-items-center">
-                                                                <img src="/storage/assets/images/icons/dashboard-icon1.png"
-                                                                    alt="Icon" />
+
+                                                                <FaUserGraduate className="text-xxl" />
                                                             </div>
                                                             <p className="fw-medium text-primary-light mb-1">Examinees
                                                             </p>
@@ -195,13 +207,13 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
                                             <div className="col-xxl-2 col-sm-4" style={{ cursor: 'pointer' }} onClick={Counselling}>
                                                 <div className="card shadow-1 radius-8 gradient-bg-end-1 h-100">
 
-                                                    <div className="card-body p-20 hoverCounter">
+                                                    <div className={`card-body p-20 hoverCounter ${activeCard === 3 ? 'active-card' : ''}`}>
                                                         <div
                                                             className="d-flex flex-wrap align-items-center gap-3 mb-16">
                                                             <div
                                                                 className="w-44-px h-44-px bg-warning-600 rounded-circle d-flex justify-content-center align-items-center">
-                                                                <img src="/storage/assets/images/icons/dashboard-icon1.png"
-                                                                    alt="Icon" />
+
+                                                                <FaHandsHelping className="text-xxl" />
                                                             </div>
                                                             <p className="fw-medium text-primary-light mb-1">Counselees
                                                             </p>
@@ -215,13 +227,12 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
                                             <div className="col-xxl-2 col-sm-4" style={{ cursor: 'pointer' }} onClick={Students}>
                                                 <div className="card shadow-1 radius-8 gradient-bg-end-1 h-100">
 
-                                                    <div className="card-body p-20 hoverCounter">
+                                                    <div className={`card-body p-20 hoverCounter ${activeCard === 4 ? 'active-card' : ''}`}>
                                                         <div
                                                             className="d-flex flex-wrap align-items-center gap-3 mb-16">
                                                             <div
                                                                 className="w-44-px h-44-px bg-warning-600 rounded-circle d-flex justify-content-center align-items-center">
-                                                                <img src="/storage/assets/images/icons/dashboard-icon1.png"
-                                                                    alt="Icon" />
+                                                                <FaBookReader className="text-xxl" />
                                                             </div>
                                                             <p className="fw-medium text-primary-light mb-1">Students
                                                             </p>
@@ -235,13 +246,13 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
                                             <div className="col-xxl-2 col-sm-4 " style={{ cursor: 'pointer' }} onClick={RejectedStudents}>
                                                 <div className="card  shadow-1 radius-8 gradient-bg-end-1 h-100">
 
-                                                    <div className="card-body p-20 hoverCounter">
+                                                    <div className={`card-body p-20 hoverCounter ${activeCard === 5 ? 'active-card' : ''}`}>
                                                         <div
                                                             className="d-flex flex-wrap align-items-center gap-3 mb-16">
                                                             <div
                                                                 className="w-44-px h-44-px bg-warning-600 rounded-circle d-flex justify-content-center align-items-center">
-                                                                <img src="/storage/assets/images/icons/dashboard-icon1.png"
-                                                                    alt="Icon" />
+
+                                                                <FaBan className="text-xxl" />
                                                             </div>
                                                             <p className="fw-medium text-primary-light mb-1">Rejected
                                                             </p>
@@ -283,6 +294,7 @@ export default function Dashboard({ auth, role, totalpendingreg, totaltestexam, 
                                                             </tr>
                                                         </thead>
                                                         <tbody>
+
                                                             {registration.map((item, index) => {
 
                                                                 const studentname = item.first_name + "-" + item.last_name;

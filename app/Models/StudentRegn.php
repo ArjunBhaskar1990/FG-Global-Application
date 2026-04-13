@@ -15,7 +15,7 @@ class StudentRegn extends Model
         'automated_calls', 'automated_email', 'mother_name', 'mother_address', 'mother_contact',
         'mother_employment', 'mother_phone', 'mother_email', 'mother_qualification', 'father_name',
         'father_address', 'father_contact', 'father_employment', 'father_phone', 'father_email', 'father_qualification',
-        'reg_id', 'date_testexam', 'credential_pass', 'user_id', 'status', 'notice', 'exam_summary', 'bridge_course',
+        'reg_id', 'date_testexam', 'credential_pass', 'user_id', 'status', 'notice', 'exam_summary', 'bridge_course', 'emirates_id'
     ];
 
     protected function casts(): array

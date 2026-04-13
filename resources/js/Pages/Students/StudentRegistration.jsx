@@ -4,17 +4,19 @@
 import InputField from "../Components/FormData/inputField";
 import EmailField from "../Components/FormData/EmailField";
 import SelectInput from "../Components/FormData/SelectInput";
+import CountryCode from "../Components/FormData/countryCode";
 import DatePlugin from "../Components/FormData/DatePlugin";
 import { useForm } from "@inertiajs/react";
 import Modal from 'react-bootstrap4-modal';
 import { useEffect, useState } from "react";
 
-export default function StudentRegistration() {
+export default function StudentRegistration({ countries }) {
 
 
     const [visible, setVisible] = useState(false);
     const [message, setMessage] = useState('');
     const [regnNumber, setRegnNumber] = useState('');
+
 
 
 
@@ -57,12 +59,15 @@ export default function StudentRegistration() {
         address: '',
         city: '',
         state: '',
+        country_code_student: '',
+        country_code_autocalls: '',
         contact_no: '',
         email: '',
         dob: '',
         age: '',
         gender: '',
         adhaar: '',
+        emirates_id: '',
         passport: '',
 
         // Mode of Education
@@ -80,8 +85,10 @@ export default function StudentRegistration() {
         mother_name: '',
         mother_address: '',
         mother_contact: '',
+        country_code_motherpersonal: '',
         mother_employment: '',
         mother_phone: '',
+        country_code_motherwork: '',
         mother_email: '',
         mother_qualification: '',
 
@@ -90,8 +97,10 @@ export default function StudentRegistration() {
         father_name: '',
         father_address: '',
         father_contact: '',
+        country_code_fatherpersonal: '',
         father_employment: '',
         father_phone: '',
+        country_code_fatherwork: '',
         father_email: '',
         father_qualification: '',
 
@@ -223,16 +232,19 @@ export default function StudentRegistration() {
 
                                 <div className="d-flex">
                                     <div>
-                                        {errors.contact_no && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.contact_no}</span>}
-                                        <InputField label="Contact No." setData={setData} dataname="contact_no" placeholder="Enter your contact number" />
+                                        {errors.country_code_student && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.country_code_student}</span>}
+                                        <CountryCode setData={setData} selectMode="" dataname="country_code_student" label="Country Code" placeholder="Country Code" values={countries} />
                                     </div>
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                     <div>
-                                        {errors.email && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.email}</span>}
-                                        <EmailField label="Email" setData={setData} dataname="email" placeholder="Enter Email " />
+
+                                        <InputField label="Contact No." setData={setData} dataname="contact_no" placeholder="Enter your contact number" />
                                     </div>
 
                                 </div>
+                                {errors.email && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.email}</span>}
+                                <EmailField label="Email" setData={setData} dataname="email" placeholder="Enter Email " />
+
                                 <div className="d-flex">
 
                                     <div>
@@ -248,23 +260,16 @@ export default function StudentRegistration() {
                                 </div>
                                 <div className="d-flex">
 
-
-                                    <div>
-                                        {errors.gender && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.gender}</span>}
-                                        <SelectInput setData={setData} selectMode="" dataname="gender" label="Select Gender" placeholder="Gender" values={['Male', 'Female']} />
-
-
-                                    </div>
-
-
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-
                                     <div>
                                         {errors.adhaar && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.adhaar}</span>}
                                         <InputField setData={setData} dataname="adhaar" label="Aadhaar Number" placeholder="Enter your Aadhaar ID " />
                                     </div>
+                                    &nbsp;&nbsp;
+                                    <div>
+                                        {errors.emirates_id && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.emirates_id}</span>}
+                                        <InputField setData={setData} dataname="emirates_id" label="Emirates ID" placeholder="Enter your Emirates ID " />
+                                    </div>
                                 </div>
-
 
                                 <div>
                                     {errors.passport && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.passport}</span>}
@@ -272,6 +277,10 @@ export default function StudentRegistration() {
                                 </div>
 
 
+                            </div>
+                            <div className="col-sm-4">
+                                {errors.gender && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.gender}</span>}
+                                <SelectInput setData={setData} selectMode="" dataname="gender" label="Select Gender" placeholder="Gender" values={['Male', 'Female']} />
                             </div>
 
                             <div className="mt-5">
@@ -317,11 +326,16 @@ export default function StudentRegistration() {
 
                                 </div> <br />
                                 <InputField setData={setData} dataname="previous_school" label="Previous School (Optional)" placeholder="Enter your previous school" />
+                                <br />
+                                {errors.country_code_autocalls && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.country_code_autocalls}</span>}
+                                <div className="d-flex">
 
-                                <div>
+                                    <CountryCode setData={setData} selectMode="" dataname="country_code_autocalls" label="Country Code" placeholder="Country Code" values={countries} />
+                                    &nbsp;
                                     {errors.automated_calls && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.automated_calls}</span>}
-                                    <InputField setData={setData} dataname="automated_calls" label="Best Phone Number for Automated Calls" placeholder="Enter Phone Number.." />
+                                    <InputField setData={setData} dataname="automated_calls" label="Automated Calls" placeholder="Enter Phone Number.." />
                                 </div>
+                                <br />
 
                                 <div>
                                     {errors.automated_email && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.automated_email}</span>}
@@ -352,6 +366,7 @@ export default function StudentRegistration() {
                                 </div>
 
                                 <div>
+
                                     {errors.mother_address && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.mother_address}</span>}
                                     <InputField label="Address" setData={setData} dataname="mother_address" placeholder="Address.." />
                                 </div>
@@ -360,29 +375,40 @@ export default function StudentRegistration() {
                                 <div className="d-flex justify-content-between">
 
                                     <div>
+                                        {errors.country_code_motherpersonal && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.country_code_motherpersonal}</span>}
+                                        <CountryCode setData={setData} selectMode="" dataname="country_code_motherpersonal" label="Country Code" placeholder="Country Code" values={countries} />
+                                    </div>
+
+                                    <div>
                                         {errors.mother_contact && <span className="fw-bold  text-danger" style={{ fontSize: '8px' }}>{errors.mother_contact}</span>}
                                         <InputField label="Contact Number" setData={setData} dataname="mother_contact" placeholder="Contact Number.." />
                                     </div>
 
-                                    <div>
-                                        {errors.mother_employment && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.mother_employment}</span>}
-                                        <InputField label="Place of Employment" setData={setData} dataname="mother_employment" placeholder="Employment Details.." />
-                                    </div>
+                                </div>
+                                <div>
+                                    {errors.mother_employment && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.mother_employment}</span>}
+                                    <InputField label="Place of Employment" setData={setData} dataname="mother_employment" placeholder="Employment Details.." />
                                 </div>
                                 <div className="d-flex justify-content-between">
+                                    <div>
+                                        {errors.country_code_motherwork && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.country_code_motherwork}</span>}
+                                        <CountryCode setData={setData} selectMode="" dataname="country_code_motherwork" label="Country Code" placeholder="Country Code" values={countries} />
+
+                                    </div>
                                     <div>
                                         {errors.mother_phone && <span className="fw-bold  text-danger" style={{ fontSize: '8px' }}>{errors.mother_phone}</span>}
                                         <InputField label="Work Phone Number" setData={setData} dataname="mother_phone" placeholder="Work Phone Number.." />
                                     </div>
-                                    <div>
-                                        {errors.mother_email && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.mother_email}</span>}
-                                        <EmailField label="Email" setData={setData} dataname="mother_email" placeholder="Mother's Email " />
-                                    </div>
+
                                 </div>
 
                                 <div>
                                     {errors.mother_qualification && <span className="fw-bold  text-danger" style={{ fontSize: '8px' }}>{errors.mother_qualification}</span>}
                                     <InputField label="Qualification" setData={setData} dataname="mother_qualification" placeholder="Mother's Qualification.." />
+                                </div>
+                                <div>
+                                    {errors.mother_email && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.mother_email}</span>}
+                                    <EmailField label="Email" setData={setData} dataname="mother_email" placeholder="Mother's Email " />
                                 </div>
 
                             </div>
@@ -410,30 +436,31 @@ export default function StudentRegistration() {
 
 
                                 <div className="d-flex justify-content-between">
-
+                                    <div>
+                                        {errors.country_code_fatherpersonal && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.country_code_fatherpersonal}</span>}
+                                        <CountryCode setData={setData} selectMode="" dataname="country_code_fatherpersonal" label="Country Code" placeholder="Country Code" values={countries} />
+                                    </div>
                                     <div>
                                         {errors.father_contact && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_contact}</span>}
                                         <InputField label="Contact Number" setData={setData} dataname="father_contact" placeholder="Contact Number.." />
                                     </div>
-                                    <div>
-                                        {errors.father_employment && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_employment}</span>}
-                                        <InputField label="Place of Employment" setData={setData} dataname="father_employment" placeholder="Employment Details.." />
-                                    </div>
 
 
+                                </div>
+                                <div>
+                                    {errors.father_employment && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_employment}</span>}
+                                    <InputField label="Place of Employment" setData={setData} dataname="father_employment" placeholder="Employment Details.." />
                                 </div>
 
                                 <div className="d-flex justify-content-between">
 
-
+                                    <div>
+                                        {errors.country_code_fatherwork && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.country_code_fatherwork}</span>}
+                                        <CountryCode setData={setData} selectMode="" dataname="country_code_fatherwork" label="Country Code" placeholder="Country Code" values={countries} />
+                                    </div>
                                     <div>
                                         {errors.father_phone && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_phone}</span>}
                                         <InputField label="Work Phone Number" setData={setData} dataname="father_phone" placeholder="Work Phone Number.." />
-                                    </div>
-
-                                    <div>
-                                        {errors.father_email && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_email}</span>}
-                                        <EmailField label="Email" setData={setData} dataname="father_email" placeholder="Father's Email " />
                                     </div>
 
                                 </div>
@@ -444,6 +471,11 @@ export default function StudentRegistration() {
                                 </div>
 
 
+                                <div>
+
+                                    {errors.father_email && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_email}</span>}
+                                    <EmailField label="Email" setData={setData} dataname="father_email" placeholder="Father's Email " />
+                                </div>
                                 <button type="button" onClick={completeRegistration} className="btn btn-primary-600 w-100 mt-5 py-16 radius-8 text-sm fw-semibold">
                                     Complete Registration
                                 </button>
