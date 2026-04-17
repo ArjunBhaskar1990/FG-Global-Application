@@ -14,13 +14,15 @@ class DashboardController extends Controller
     public function Dashboard()
     {
 
+
         $user = Auth::user();
 
         if ($user->role->value === 2) {
 
             $authUser = Auth::user()->load('students');
 
-            if ($authUser->students->notice === 3) {
+            if ((String) $authUser->students->notice === "3") {
+
                 $dashboard = "Dashboard/StudentMain";
             } else {
                 $dashboard = "Dashboard/StudentDashboard";

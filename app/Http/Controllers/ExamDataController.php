@@ -13,11 +13,9 @@ class ExamDataController extends Controller
 
     public function store(Request $request)
     {
-
-        // dd($request->all());
-
         $request->validate([
-            'answers' => 'required|array',
+            'answers'        => 'required|array',
+            'answers.*.file' => 'nullable',
         ]);
         $authUser = Auth::user()->load('students');
 
@@ -25,18 +23,17 @@ class ExamDataController extends Controller
 
         $studentregnId = $authUser->students->id;
 
-        $studentRegn = StudentRegn::findOrFail($studentregnId);
+        $studentRegn                = StudentRegn::findOrFail($studentregnId);
+        $studentRegn->date_testexam = null;
+        $studentRegn->save();
 
-        foreach ($request->answers as $item) {
+        foreach ($request->answers as $key => $item) {
 
-            $file = $item['file'] ?? null;
+            $file = $request->file("answers.$key.file");
 
             $new_image = $file
-                ? $this->ImageUpload($file, 'exam_image', 'answersheet' . "_" . uniqid())
+                ? $this->ImageUpload($file, 'exam_image', 'answersheet_' . uniqid())
                 : null;
-
-            $studentRegn->date_testexam = null;
-            $studentRegn->save();
 
             $studentRegn->examresult()->create([
                 'question' => $item['question'] ?? null,
@@ -92,6 +89,7 @@ class ExamDataController extends Controller
         $email    = $request->email;
         $typedOTP = $request->typed_otp;
 
+
         if ((int) $trueOTP === (int) $typedOTP) {
 
             $authUser->email             = $email;
@@ -100,7 +98,6 @@ class ExamDataController extends Controller
             $authUser->save();
 
             $authUser->students()->update([
-                'status' => 3,
                 'notice' => 3,
             ]);
 
@@ -112,5 +109,30 @@ class ExamDataController extends Controller
 
         }
 
+    }
+    public function acceptCondition()
+    {
+
+        $authUser = Auth::user()->load('students');
+
+        $authUser->students()->update([
+            'status' => 3,
+            // 'notice' => 3,
+        ]);
+
+        return redirect()->route('page.dashboard');
+
+    }
+
+    public function completeWithoutOTP()
+    {
+
+        $authUser = Auth::user()->load('students');
+
+        $authUser->students()->update([
+            'status' => 3,
+            'notice' => 3,
+        ]);
+        return redirect()->route('page.dashboard');
     }
 }

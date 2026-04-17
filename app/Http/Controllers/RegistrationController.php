@@ -27,7 +27,7 @@ class RegistrationController extends Controller
 
     public function newRegistration(Request $request)
     {
-
+// dd($request->all());
         $validated = $request->validate([
 
             'first_name'                  => 'required',
@@ -167,7 +167,7 @@ class RegistrationController extends Controller
         $RegnModal->update([
             'user_id'         => $user->id,
             'status'          => $studentStatus,
-            'credential_pass' => $randPassword,
+            'credential_pass' => str_replace(" ", "", $randPassword),
             'date_testexam'   => $dateExam,
         ]);
 

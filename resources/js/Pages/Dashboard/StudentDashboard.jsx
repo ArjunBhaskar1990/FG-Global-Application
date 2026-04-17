@@ -12,9 +12,9 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
     const [answers, setAnswers] = useState([]);
     const [showOTPInput, setShowOTPInput] = useState(0);
     const [emailError, setEmailError] = useState('');
+    const [veriEmail, setVeriEmail] = useState(auth.students.email)
 
-    const email_frverification = useRef();
-    const INITIAL_TIME = 1 * 60; // 10 Mins
+    const INITIAL_TIME = 5 * 60;  // 5 mins
 
     const [timeLeft, setTimeLeft] = useState(INITIAL_TIME);
     const [isRunning, setIsRunning] = useState(false);
@@ -92,7 +92,7 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
     useEffect(() => {
         if (questionsState && questionsState.length > 0) {
             setAnswers(
-                questionsState.map((q) => ({ question: q.questions, answer: "", file: null }))
+                questionsState.map((q) => ({ question: q.questions, answer: "", image: null }))
             );
         }
     }, [questionsState]);
@@ -109,7 +109,7 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
     const handleFileChange = (index, file) => {
         setAnswers((prev) => {
             const newAnswers = [...prev];
-            newAnswers[index] = { ...newAnswers[index], file };
+            newAnswers[index] = { ...newAnswers[index], file }; // ✅ change image → file
             return newAnswers;
         });
     };
@@ -117,43 +117,57 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
 
     const handleSubmit = () => {
 
-
-        const filledCount = answers.filter((ans) => ans.answer.trim() !== "").length;
+        const filledCount = answers.filter((ans) => ans.answer?.trim() !== "").length;
 
         if (filledCount < 5) {
             alert(`Please fill at least 5 text fields. You have filled ${filledCount}.`);
             return;
         }
 
-        router.visit(route('examresult.store'), {
-            method: 'POST',
-            data: {
-                answers: answers
-            },
+        const formData = new FormData();
+
+        answers.forEach((item, index) => {
+            formData.append(`answers[${index}][question]`, item.question || "");
+            formData.append(`answers[${index}][answer]`, item.answer || "");
+
+            if (item.file) {
+                formData.append(`answers[${index}][file]`, item.file);
+            }
+        });
+
+        router.post(route('examresult.store'), formData, {
+            forceFormData: true,
             preserveState: true,
             preserveUrl: true,
-            onSuccess: () => {
-                setAnswers([]);
-
-                const examResults = document.getElementById('exam-results');
-                examResults.reset();
-
-            },
-            onError: (page) => {
-                // console.log(page.props);
-            }
-
-        })
-
+            onSuccess: () => { },
+            onError: (errors) => { }
+        });
     };
 
 
-    const goToComplete = () => {
+    const willDolater = () => {
+        router.visit(route('complete.registration-withoutotp'), {
+            method: "POST",
+            preserveState: true,
+            preserveScroll: true,
+            preserveUrl: true,
+            onSuccess: (page) => {
+                setEmailError(page.props.flash.failed);
 
-        router.visit(route('complete.registration'), {
+            }
+        })
+
+    }
+
+
+
+    const acceptCondition = () => {
+
+
+        router.visit(route('accept.condition'), {
             method: "POST",
             data: {
-                email: email_frverification.current.value,
+                email: veriEmail,
                 typed_otp: inputs
             },
             preserveState: true,
@@ -164,6 +178,31 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
 
 
 
+            }
+        })
+
+    }
+
+    const goToComplete = () => {
+
+
+        router.visit(route('complete.registration'), {
+            method: "POST",
+            data: {
+                email: veriEmail,
+                typed_otp: inputs
+            },
+            preserveState: true,
+            preserveScroll: true,
+            preserveUrl: true,
+            onSuccess: (page) => {
+                setEmailError(page.props.flash.failed);
+
+
+            },
+            onError: (page) => {
+
+                setEmailError(page.email);
             }
         })
     }
@@ -181,7 +220,7 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
             preserveUrl: true,
             data: {
 
-                email: email_frverification.current.value
+                email: veriEmail
 
             },
             onSuccess: () => {
@@ -232,11 +271,11 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
                 className="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
             </div>
 
-            <SideMenu auth={auth} role={role} theme={theme}/>
+            <SideMenu auth={auth} role={role} theme={theme} />
 
-            <main id="dashboard-main " className="dashboard-main">
+            <main id="dashboard-main " className="dashboard-main" style={{ fontFamily: 'Poppins' }}>
 
-                <NavBar auth={auth} theme={theme}/>
+                <NavBar auth={auth} theme={theme} />
 
                 <div id="body" className="dashboard-main-body">
 
@@ -345,7 +384,7 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
                                         </>
                                     }
 
-                                    {auth.students.status === 2 && auth.students.notice === 1 &&
+                                    {(Number(auth.students.status) === 2 && Number(auth.students.notice) === 1) &&
                                         <>
                                             <p className="text-start fs-6">
                                                 Your exam has been successfully submitted for review. Our counselling team will review your answers, and once the review is complete, we will post the updates here. <br /> <br />
@@ -356,14 +395,14 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
                                             </p>
                                         </>
                                     }
-                                    {auth.students.status === 2 && auth.students.notice === 2 &&
+                                    {(Number(auth.students.status) === 2 && Number(auth.students.notice) === 2) &&
                                         <>
                                             <p className="text-start fs-6">
                                                 Dear Parent, <br /> <br />
                                                 {auth.students.exam_summary.toUpperCase()} <br /> <br />
 
 
-                                                {auth.students.bridge_course === 1 &&
+                                                {Number(auth.students.bridge_course) === 1 &&
                                                     <div>
 
                                                         <p className="fs-6">
@@ -371,13 +410,13 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
 
                                                         </p>
 
-                                                        <button onClick={goToComplete} className="btn btn-success fw-bold text-dark">ACCEPT AND PROCEED !!</button>
+                                                        <button onClick={acceptCondition} className="btn btn-success fw-bold text-dark">ACCEPT AND PROCEED !!</button>
 
                                                     </div>
 
                                                 }
 
-                                                {auth.students.bridge_course === 0 &&
+                                                {Number(auth.students.bridge_course) === 0 &&
                                                     <div>
 
                                                         <p className="fs-6">
@@ -386,7 +425,7 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
 
                                                         </p>
 
-                                                        <button onClick={goToComplete} className="btn btn-success fw-bold text-dark">ACCEPT AND PROCEED !!</button>
+                                                        <button onClick={acceptCondition} className="btn btn-success fw-bold text-dark">ACCEPT AND PROCEED !!</button>
 
                                                     </div>
 
@@ -401,11 +440,11 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
 
 
 
-                                    {auth.students.status === 3 &&
+                                    {Number(auth.students.status) === 3 &&
                                         <>
                                             <p className="text-start fs-6">
                                                 You have successfully completed our registration process. Just one more step to go—please verify your email ID to ensure smooth communication. <br /> <br />
-                                                <input disabled={isRunning} ref={email_frverification} style={isRunning ? { backgroundColor: '#b9b6b6' } : { backgroundColor: '#f2f2f2' }} className="p-1 rounded ps-3 w-50 fs-5 text-dark border" defaultValue={auth.students.email} type="email" /> &nbsp;
+                                                <input disabled={isRunning} onChange={(e) => setVeriEmail(e.target.value)} style={isRunning ? { backgroundColor: '#b9b6b6' } : { backgroundColor: '#f2f2f2' }} className="p-1 rounded ps-3 w-50 fs-5 text-dark border" defaultValue={veriEmail} type="email" /> &nbsp;
                                                 <button disabled={isRunning} onClick={sendOTP} className={`btn ${isRunning ? ' btn-secondary' : 'btn-primary'}`}>SEND OTP</button>
                                                 {isRunning &&
                                                     <span className="fs-5">
@@ -429,6 +468,13 @@ export default function StudentDashboard({ auth, theme, role, questions }) {
                                                         }`}
                                                 >
                                                     VERIFY EMAIL & COMPLETE REGISTRATION !!
+                                                </button> &nbsp;
+                                                <button
+                                                    onClick={willDolater}
+                                                    className={`btn btn-primary fw-bold text-dark"
+                                                        }`}
+                                                >
+                                                    I'll DO IT LATER !!
                                                 </button>
                                             </p>
                                         </>

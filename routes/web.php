@@ -10,6 +10,18 @@ use App\Http\Controllers\SessionController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
+// Route::get('/changepassword',  function() {
+
+// $user = User::find(1);
+// $user->password = "12345678";
+// $user->save();
+
+// $user = User::find(2);
+// $user->password = "12345678";
+// $user->save();
+
+// });
+
 Route::get('/signup', function () {
 
     return Inertia::render('Auth/SuperAdmin/SignUp');
@@ -64,6 +76,8 @@ Route::middleware('auth')->group(function () {
     Route::post('/student-exam-results', [ExamDataController::class, 'store'])->name('examresult.store');
     Route::post('/student-exam-results/review-result', [ExamDataController::class, 'reviewTest'])->name('review.test');
     Route::post('/student-exam-results/complete-registration', [ExamDataController::class, 'completeRegistration'])->name('complete.registration');
+    Route::post('/student-exam-results/complete-registration-without-otp', [ExamDataController::class, 'completeWithoutOTP'])->name('complete.registration-withoutotp');
+    Route::post('/student-exam-results/accept-condition', [ExamDataController::class, 'acceptCondition'])->name('accept.condition');
 
     // OTP
 

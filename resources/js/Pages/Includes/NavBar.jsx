@@ -66,8 +66,8 @@ export default function NavBar({ auth, theme }) {
 
                         </div>
                     </div>
-                    <div className="col-auto">
-                        <div className="d-flex flex-wrap align-items-center gap-3">
+                    <div className="col-auto d-none d-md-block">
+                        <div className="d-flex flex-wrap align-items-center gap-2">
 
                             <div class="d-grid grid-cols-2 gap-3 dark-light-mode">
                                 <button onClick={() => setActive(1)} id="light" type="button"

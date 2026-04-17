@@ -1,7 +1,7 @@
 
 
 
-import InputField from "../Components/FormData/inputField";
+import InputField from "../Components/FormData/InputField";
 import EmailField from "../Components/FormData/EmailField";
 import SelectInput from "../Components/FormData/SelectInput";
 import CountryCode from "../Components/FormData/countryCode";
@@ -9,6 +9,7 @@ import DatePlugin from "../Components/FormData/DatePlugin";
 import { useForm } from "@inertiajs/react";
 import Modal from 'react-bootstrap4-modal';
 import { useEffect, useState } from "react";
+import NumberField from "../Components/FormData/NumberField";
 
 export default function StudentRegistration({ countries }) {
 
@@ -17,7 +18,57 @@ export default function StudentRegistration({ countries }) {
     const [message, setMessage] = useState('');
     const [regnNumber, setRegnNumber] = useState('');
 
+    const [inputStudentContact, setInputStudentContact] = useState('');
+    const [inputAge, setInputAge] = useState('');
+    const [autoCalls, setAutoCalls] = useState('');
+    const [motherContact, setMotherContact] = useState('');
+    const [motherWork, setMotherWork] = useState('');
+    const [fatherContact, setFatherContact] = useState('');
+    const [fatherWork, setFatherWork] = useState('');
 
+
+
+
+    const handleStuContact = (event) => {
+        const { value } = event.target;
+        const numericValue = value.replace(/[^\d*\.?\d*$]/g, '');
+        setInputStudentContact(numericValue);
+    };
+
+    const handleAge = (event) => {
+        const { value } = event.target;
+        const numericValue = value.replace(/[^\d*\.?\d*$]/g, '');
+        setInputAge(numericValue);
+    };
+
+    const handleAutoCalls = (event) => {
+        const { value } = event.target;
+        const numericValue = value.replace(/[^\d*\.?\d*$]/g, '');
+        setAutoCalls(numericValue);
+    };
+
+    const handleMotherContact = (event) => {
+        const { value } = event.target;
+        const numericValue = value.replace(/[^\d*\.?\d*$]/g, '');
+        setMotherContact(numericValue);
+    };
+
+    const handleMotherWork = (event) => {
+        const { value } = event.target;
+        const numericValue = value.replace(/[^\d*\.?\d*$]/g, '');
+        setMotherWork(numericValue);
+    };
+    const handleFatherContact = (event) => {
+        const { value } = event.target;
+        const numericValue = value.replace(/[^\d*\.?\d*$]/g, '');
+        setFatherContact(numericValue);
+    };
+
+    const handleFatherWork = (event) => {
+        const { value } = event.target;
+        const numericValue = value.replace(/[^\d*\.?\d*$]/g, '');
+        setFatherWork(numericValue);
+    };
 
 
     const selectMode = (e) => {
@@ -50,6 +101,19 @@ export default function StudentRegistration({ countries }) {
     const selectDuration = (e) => {
         setData('duration', e.target.value);
     }
+
+    useEffect(() => {
+
+        setData('contact_no', inputStudentContact);
+        setData('age', inputAge);
+        setData('automated_calls', autoCalls);
+        setData('mother_contact', motherContact);
+        setData('mother_phone', motherWork);
+        setData('father_contact', fatherContact);
+        setData('father_phone', fatherWork);
+
+
+    }, [inputStudentContact, inputAge, autoCalls, motherContact, motherWork, fatherContact, fatherWork]);
 
 
     const { data, setData, post, reset, rocessing, errors } = useForm({
@@ -105,6 +169,8 @@ export default function StudentRegistration({ countries }) {
         father_qualification: '',
 
     })
+
+    console.log(data);
 
 
     const completeRegistration = () => {
@@ -238,7 +304,8 @@ export default function StudentRegistration({ countries }) {
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                     <div>
 
-                                        <InputField label="Contact No." setData={setData} dataname="contact_no" placeholder="Enter your contact number" />
+                                        {errors.contact_no && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.contact_no}</span>}
+                                        <NumberField label="Contact No." functionname={handleStuContact} inputAmount={inputStudentContact} placeholder="Enter your contact number" />
                                     </div>
 
                                 </div>
@@ -254,9 +321,8 @@ export default function StudentRegistration({ countries }) {
                                     &nbsp;&nbsp;&nbsp;&nbsp;
                                     <div>
                                         {errors.age && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.age}</span>}
-                                        <InputField label="Age" setData={setData} dataname="age" placeholder="Enter your Age " />
+                                        <NumberField label="Age." functionname={handleAge} inputAmount={inputAge} placeholder="Enter your Age" />
                                     </div>
-
                                 </div>
                                 <div className="d-flex">
 
@@ -332,8 +398,10 @@ export default function StudentRegistration({ countries }) {
 
                                     <CountryCode setData={setData} selectMode="" dataname="country_code_autocalls" label="Country Code" placeholder="Country Code" values={countries} />
                                     &nbsp;
+
                                     {errors.automated_calls && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.automated_calls}</span>}
-                                    <InputField setData={setData} dataname="automated_calls" label="Automated Calls" placeholder="Enter Phone Number.." />
+                                    <NumberField label="Automated Calls" functionname={handleAutoCalls} inputAmount={autoCalls} placeholder="Enter Phone Number" />
+
                                 </div>
                                 <br />
 
@@ -381,7 +449,8 @@ export default function StudentRegistration({ countries }) {
 
                                     <div>
                                         {errors.mother_contact && <span className="fw-bold  text-danger" style={{ fontSize: '8px' }}>{errors.mother_contact}</span>}
-                                        <InputField label="Contact Number" setData={setData} dataname="mother_contact" placeholder="Contact Number.." />
+
+                                        <NumberField label="Contact Number" functionname={handleMotherContact} inputAmount={motherContact} placeholder="Contact Number" />
                                     </div>
 
                                 </div>
@@ -396,8 +465,10 @@ export default function StudentRegistration({ countries }) {
 
                                     </div>
                                     <div>
+
                                         {errors.mother_phone && <span className="fw-bold  text-danger" style={{ fontSize: '8px' }}>{errors.mother_phone}</span>}
-                                        <InputField label="Work Phone Number" setData={setData} dataname="mother_phone" placeholder="Work Phone Number.." />
+                                        <NumberField label="Work Phone Number" functionname={handleMotherWork} inputAmount={motherWork} placeholder="Work Phone Number" />
+
                                     </div>
 
                                 </div>
@@ -442,7 +513,7 @@ export default function StudentRegistration({ countries }) {
                                     </div>
                                     <div>
                                         {errors.father_contact && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_contact}</span>}
-                                        <InputField label="Contact Number" setData={setData} dataname="father_contact" placeholder="Contact Number.." />
+                                        <NumberField label="Contact Number" functionname={handleFatherContact} inputAmount={fatherContact} placeholder="Contact Number" />
                                     </div>
 
 
@@ -460,7 +531,7 @@ export default function StudentRegistration({ countries }) {
                                     </div>
                                     <div>
                                         {errors.father_phone && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_phone}</span>}
-                                        <InputField label="Work Phone Number" setData={setData} dataname="father_phone" placeholder="Work Phone Number.." />
+                                        <NumberField label="Work Phone Number" functionname={handleFatherWork} inputAmount={fatherWork} placeholder="Work Phone Number" />
                                     </div>
 
                                 </div>
@@ -469,7 +540,6 @@ export default function StudentRegistration({ countries }) {
                                     {errors.father_qualification && <span className="fw-bold text-danger" style={{ fontSize: '8px' }}>{errors.father_qualification}</span>}
                                     <InputField label="Qualification" setData={setData} dataname="father_qualification" placeholder="Father's Qualification.." />
                                 </div>
-
 
                                 <div>
 

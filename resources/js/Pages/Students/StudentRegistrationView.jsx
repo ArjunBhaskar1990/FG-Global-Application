@@ -72,10 +72,15 @@ export default function StudentRegistrationView({ auth, role, theme, studentdeta
         let password = studentDetails.credential_pass;
         let logindate = formattedDate(studentDetails.date_testexam)
 
-        let msg = `Hello Mr. ${name}, your login credentials will be active on ${logindate}. Kindly attend the exam.
+        let msg = `Hello Mr. ${name},
 
+Your login credentials will be active on ${logindate}. Kindly attend the exam.
 Email: ${email}
-Password: ${password}`;
+Password: ${password}
+
+Regards,
+FG Global Team
+`;
 
         let phone = studentDetails.contact_no;
         let waURL = `https://wa.me/${phone}?text=${encodeURIComponent(msg)}`;
@@ -122,11 +127,11 @@ Password: ${password}`;
                 className="overlay bg-black bg-opacity-50 w-100 h-100 position-fixed z-9 visibility-hidden opacity-0 duration-300">
             </div>
 
-            <SideMenu auth={auth} role={role} theme={theme}/>
+            <SideMenu auth={auth} role={role} theme={theme} />
 
             <main id="dashboard-main" className="dashboard-main">
 
-                 <NavBar auth={auth} theme={theme}/>
+                <NavBar auth={auth} theme={theme} />
 
                 <div className="dashboard-main-body">
 

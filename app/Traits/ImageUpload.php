@@ -6,7 +6,7 @@ trait ImageUpload
     public function ImageUpload($image, $folder, $name)
     {
 
-        $extension      = $image->extension();
+        $extension      = $image->getClientOriginalExtension();
         $time           = time();
         $new_image_name = $name . $time . "." . $extension;
 

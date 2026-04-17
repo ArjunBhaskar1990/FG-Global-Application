@@ -1,5 +1,5 @@
 <x-mail::message>
-    # Thank you for using FG Global.
+    # Thank you for choosing FG Global.
 
     {{ $verification_code }}
 
@@ -7,7 +7,7 @@
 
     If you did not request this verification, please ignore this email.
 
-    Thanks,<br>
+    Thanks,
     Best regards,
     FG Global Team
 </x-mail::message>

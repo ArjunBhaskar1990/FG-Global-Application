@@ -135,7 +135,7 @@ export default function Dashboard({ auth, role, theme, totalpendingreg, totaltes
 
             <SideMenu auth={auth} role={role} theme={theme} />
 
-            <main id="dashboard-main" className="dashboard-main">
+            <main id="dashboard-main" className="dashboard-main" style={{ fontFamily: 'Poppins'}}>
 
                 <NavBar auth={auth} theme={theme} />
 
